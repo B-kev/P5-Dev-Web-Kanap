@@ -20,7 +20,7 @@ function addProducts(canapé) {
     // const description = canapés[i].description;
     // const imageUrl = canapés[i].imageUrl;
     // const id = "./product.html?id=" + canapés[i]._id;
-    const { _id, name, description, imageUrl, altTxt } = canapé[i];
+    const { altTxt, description, imageUrl, name, _id } = canapé[i];
 
     /**
      * creation Element & balise
