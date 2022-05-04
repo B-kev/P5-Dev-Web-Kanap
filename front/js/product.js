@@ -24,21 +24,16 @@ function canapés(z) {
   let prix = document.getElementById("price");
   prix.innerText = price;
 
-  // price à sauvegarder dn s le loc   storage une le bouton clicker
+  // price à sauvegarder dns le loc   storage une le bouton clicker
   itemPrice = price;
 
-  const quantity = document.getElementById("quantity");
+  const Qt = document.getElementById("quantity");
 
-  quantity.addEventListener("input", (e) => {
-    quantity.value = e.target.value;
+  Qt.addEventListener("input", (e) => {
+    Qt.value = e.target.value;
 
-    if (quantity.value > 1) {
-      prix.innerText = quantity.value * price;
-
-      // price à sauvegarder dn s le loc   storage une le bouton clicker
-      itemPrice = prix.innerText;
-
-      //
+    if (Qt.value > 1) {
+      prix.innerText = Qt.value * price;
     } else {
       prix.innerText = price;
     }
@@ -69,38 +64,30 @@ btn.addEventListener("click", (e) => {
   const quantity = document.querySelector("#quantity").value;
 
   // condition en cas de nnon remplissage de la quantité ou de la couleur
-  if (color == null || color == "") {
-    alert("veillez choisir la couleur svp😉😉 !!!");
-
-    document.querySelector("#colors").style.background = "red";
-    document.querySelector("#colors").addEventListener("click", () => {
-      document.querySelector("#colors").style.background = "white";
-    });
+  if (color == null || (color == "" && quantity == null) || quantity == 0) {
+    alert("veillez choisir la couleur et la quantitée svp😉😉 !!!");
     return;
-  } else if (quantity == null || quantity == 0) {
-    alert("veillez choisir la quantité svp !! 👀");
+  }
 
-    document.querySelector("#quantity").style.border = "1.5px solid red";
-    document.querySelector("#quantity").addEventListener("click", () => {
-      document.querySelector("#quantity").style.border = "white";
-    });
+  if (color == null || color == "") {
+    alert("veillez choisir la couleur svp😏 !!!");
+    return;
+  }
+  if (quantity == null || quantity == 0) {
+    alert("veillez choisir la quantitée svp !! 👀");
     return;
   }
 
   // creation de l'objet
   const object = {
     quantity: Number(quantity),
-    price: Number(itemPrice),
     id: id,
     color: color,
-    name: itemName,
-    imageUrl: imgUrl,
   };
-  console.table(object);
 
   // suavegarde données daans le local storage
   localStorage.setItem(id, JSON.stringify(object));
-
-  // changer de page
-  location.href = "./cart.html";
+  alert(
+    "Votre article a été ajouté dans le panier article dans le panier 😎🤗"
+  );
 });
