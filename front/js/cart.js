@@ -1,15 +1,8 @@
 // const section = document.getElementById("cart__items");
 const numberOfItems = localStorage.length;
 const cart = [];
-let total = 0;
-
-// altTxt: "Photo d'un canapé rouge, deux places"
-// color: "Silver"
-// id: "034707184e8e4eefb46400b5a3774b5f"
-// imageUrl: "http://localhost:3000/images/kanap07.jpeg"
-// name: "Kanap Thyoné"
-// price: 1999
-// quantity: 2
+let totalPrice = 0;
+let totalQuantity = 0;
 
 for (let i = 0; i < numberOfItems; i++) {
   const item = localStorage.getItem(localStorage.key(i));
@@ -19,8 +12,11 @@ for (let i = 0; i < numberOfItems; i++) {
 
 for (let i = 0; i < cart.length; i++) {
   const element = cart[i];
-  total += cart[i].price;
-  element.price = cart[i].price + " €";
+
+  //
+
+  totalPrice += element.price;
+  totalQuantity += element.quantity;
 
   /* *******************************************************
    **** Enfant de : <div class="cart__item__content"> *****
@@ -109,7 +105,12 @@ for (let i = 0; i < cart.length; i++) {
   article.appendChild(divContent);
 
   //---------------------------------------------------------------------------------
+  document.getElementById("totalPrice").innerText = totalPrice;
+  document.getElementById("totalQuantity").innerText = totalQuantity;
 }
-function display(car) {}
 
-document.getElementById("totalPrice").innerText = total;
+//
+//
+// for (let i = 0; i < cart.length; i++) {
+//   const item = cart[i];
+// }
