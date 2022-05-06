@@ -1,8 +1,8 @@
 fetch(`http://localhost:3000/api/products`)
   .then((res) => res.json())
-  .then((data) => canapés(data));
+  .then((data) => sofas(data));
 
-function canapés(z) {
+function sofas(z) {
   // la boucle commence
 
   z.forEach((kanap) => {

@@ -4,10 +4,10 @@ const id = urlParams.get("id");
 
 fetch(`http://localhost:3000/api/products/${id}`)
   .then((res) => res.json())
-  .then((res) => canapés(res));
+  .then((res) => sofas(res));
 
-function canapés(z) {
-  const { altTxt, colors, description, imageUrl, name, price } = z;
+function sofas(z) {
+  let { altTxt, colors, description, imageUrl, name, price } = z;
   itemColors = colors;
   imgUrl = imageUrl;
   itemName = name;
@@ -34,6 +34,7 @@ function canapés(z) {
 
     if (Qt.value > 1) {
       prix.innerText = Qt.value * price;
+      itemPrice = prix.innerText;
     } else {
       prix.innerText = price;
     }
@@ -83,11 +84,13 @@ btn.addEventListener("click", (e) => {
     quantity: Number(quantity),
     id: id,
     color: color,
+    // imageUrl: imgUrl,bn
+    // price: itemPrice,
+    // name: itemName,
   };
 
   // suavegarde données daans le local storage
   localStorage.setItem(id, JSON.stringify(object));
-  alert(
-    "Votre article a été ajouté dans le panier article dans le panier 😎🤗"
-  );
+
+  alert("Votre article a été ajouté dans le panier 😎🤗");
 });
