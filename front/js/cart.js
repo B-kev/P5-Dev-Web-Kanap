@@ -31,8 +31,11 @@ for (let i = 0; i < cart.length; i++) {
 
   function realise(imageUrl, name, price, altTxt) {
     const divImg = makeImg(imageUrl, altTxt);
+
     prix = price * quantity;
-    // console.log(quantity);
+
+    totalPrice += prix;
+    totalQuantity += quantity;
 
     const h2 = makeH2(name);
     const pColor = makePcolor(color);
@@ -40,9 +43,7 @@ for (let i = 0; i < cart.length; i++) {
     const pPrice = makePrice(prix);
     const pDelete = makePDelete();
 
-    // totalQuantity += quantity;
-
-    const input = makeInput(prix, price, quantity, pQuantity, pPrice);
+    const input = makeInput(prix, price, quantity, pQuantity, pPrice, itm);
 
     /**
      * * ******************** **********
@@ -50,13 +51,14 @@ for (let i = 0; i < cart.length; i++) {
      * * makeDivSettings
      * todo: makemakeDivDelete
      * ? makeArticle
-     * * ********************* **********
+     * * **************** ***** *********
      */
 
     const divDescription = makeDivDescription(h2, pColor, pPrice); //@ --------------
 
-    const divSettings = makeDivSettings(pQuantity); //* -----------------------
-    divSettings.appendChild(input); //* ---------------------------------------
+    const divSettingsQt = makeDivSettingsQt(pQuantity, input); //* -----------------------
+
+    const divSettings = makeDivSettings(divSettingsQt); //* -----------------------
 
     const divDelete = makemakeDivDelete(pDelete, itm); //todo ----------------------
 
@@ -64,9 +66,6 @@ for (let i = 0; i < cart.length; i++) {
 
     const article = makeArticle(color, id, divImg); // ------------------------
     article.appendChild(divContent); // ---------------------------------------
-
-    totalPrice += prix;
-    totalQuantity += quantity;
 
     document.getElementById("totalPrice").innerText = totalPrice;
     document.getElementById("totalQuantity").innerText = totalQuantity;
@@ -94,7 +93,7 @@ function makeImg(imageUrl, altTxt) {
   return divImg;
 }
 
-function makeInput(prix, price, quantity, pQuantity, pPrice) {
+function makeInput(prix, price, quantity, pQuantity, pPrice, itm) {
   const input = document.createElement("input");
   input.type = "number";
   input.name = "itemQuantity";
@@ -102,18 +101,43 @@ function makeInput(prix, price, quantity, pQuantity, pPrice) {
   input.max = 100;
   input.value = quantity;
   input.classList.add("itemQuantity");
-  input.addEventListener("click", (e) => clickInput(e));
-  function clickInput(e) {
-    input.value = e.target.value;
-    quantity = input.value;
-    prix = price * quantity;
-    totalPrice;
-    totalPrice += prix;
+  input.addEventListener("click", (e) => qtInput(e, itm, input.value));
 
-    pQuantity.innerText = "Qté : " + quantity + " ";
-    pPrice.innerText = prix;
+  function qtInput(e, itm) {
+    const itmToAdd = cart.find((product) => product.id === itm.id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+    itmToAdd.quantity = Number(input.value);
+
+    newPrice = price * itmToAdd.quantity;
+
+    pPrice.innerText = newPrice + " €";
+
+    let totalQt = 0;
+    let totalPrix = 0;
+
+    for (let i = 0; i < cart.length; i++) {
+      const itm = cart[i];
+      let { quantity } = itm;
+
+      realis();
+      function realis() {
+        newPrix = price * quantity;
+
+        totalPrix += newPrix;
+        totalQt += quantity;
+
+        document.getElementById("totalPrice").innerText = totalPrix;
+        document.getElementById("totalQuantity").innerText = totalQt;
+      }
+    }
+
+    addFromLocal(itm);
   }
+
   return input;
+}
+function addFromLocal(itm) {
+  const dataTosave = JSON.stringify(itm);
+  localStorage.setItem(itm.id, dataTosave);
 }
 
 function makeH2(name) {
@@ -137,20 +161,20 @@ function makePcolor(color) {
   return pColor;
 } //@ ----------------------------------------------
 
-function makePquantity(quantity) {
+function makePquantity() {
   const pQuantity = document.createElement("p");
-  pQuantity.innerText = "Qté : " + quantity + " ";
+  pQuantity.innerText = "Qté :";
   return pQuantity;
 } //* ----------------------------------------------
 
 function makePrice(prix) {
   const pPrice = document.createElement("p");
-  pPrice.innerText = prix;
+  pPrice.innerText = prix + " €";
 
   return pPrice;
 } //todo -----------------------------------------------
 
-function makePDelete(itm) {
+function makePDelete() {
   let pDelete = document.createElement("p");
   pDelete.innerText = "Supprimer";
   pDelete.classList.add("deleteItem");
@@ -178,12 +202,20 @@ function makeDivDescription(h2, pColor, pPrice) {
   return divDescription;
 } //@ -----------------------------------------------------------
 
-function makeDivSettings(pQuantity) {
+function makeDivSettings(makeDivSettingsQt) {
   const divSettings = document.createElement("div");
   divSettings.classList.add("cart__item__content__settings");
-  divSettings.appendChild(pQuantity);
+  divSettings.appendChild(makeDivSettingsQt);
   return divSettings;
-} //* ------------------------------------------------------------
+}
+function makeDivSettingsQt(pQuantity, input) {
+  const makeDivSettingsQt = document.createElement("div");
+  makeDivSettingsQt.classList.add("cart__item__content__settings__quantity");
+  makeDivSettingsQt.appendChild(pQuantity);
+  makeDivSettingsQt.appendChild(input);
+  return makeDivSettingsQt;
+}
+//* ------------------------------------------------------------
 
 function makemakeDivDelete(pDelete, itm) {
   const divDelete = document.createElement("div");
