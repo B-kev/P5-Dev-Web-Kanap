@@ -1,4 +1,4 @@
-const numberOfItems = localStorage.length;
+// const numberOfItems = localStorage.length;
 const cart = [];
 let totalPrice = 0;
 let totalQuantity = 0;
@@ -7,11 +7,16 @@ let totalQuantity = 0;
  * ! ****** ****  recuperation localStorage ************/
 //@ ******************************************************
 
-for (let i = 0; i < numberOfItems; i++) {
-  const item = localStorage.getItem(localStorage.key(i));
-  const itemObject = JSON.parse(item);
-  cart.push(itemObject);
+function init() {
+  let numberOfItems = localStorage.length;
+  for (let i = 0; i < numberOfItems; i++) {
+    const item = localStorage.getItem(localStorage.key(i));
+    const itemObject = JSON.parse(item);
+    cart.push(itemObject);
+  }
 }
+
+init();
 
 /** * ************* ******** ******* *************** **********
  * !  +++++++++++*********  Items boucle  ********+++++++++++*/
@@ -60,7 +65,7 @@ for (let i = 0; i < cart.length; i++) {
 
     const divSettings = makeDivSettings(divSettingsQt); //* -----------------------
 
-    const divDelete = makemakeDivDelete(pDelete, itm); //todo ----------------------
+    const divDelete = makemakeDivDelete(pDelete, itm, id); //todo ----------------------
 
     const divContent = makeDivContent(divDescription, divSettings, divDelete); //? ---------------
 
@@ -106,6 +111,7 @@ function makeInput(prix, price, quantity, pQuantity, pPrice, itm) {
   function qtInput(e, itm) {
     const itmToAdd = cart.find((product) => product.id === itm.id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
     itmToAdd.quantity = Number(input.value);
+    quantity = itmToAdd.quantity;
 
     newPrice = price * itmToAdd.quantity;
 
@@ -217,18 +223,31 @@ function makeDivSettingsQt(pQuantity, input) {
 }
 //* ------------------------------------------------------------
 
-function makemakeDivDelete(pDelete, itm) {
+function makemakeDivDelete(pDelete, itm, id) {
   const divDelete = document.createElement("div");
   divDelete.appendChild(pDelete);
   divDelete.classList.add("cart__item__content__settings__delete");
 
   divDelete.addEventListener("click", () => {
-    const itmToDelete = cart.findIndex((product) => product.id === itm.id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+    // console.log("dhiqijcmdjopo");
+    let result = confirm("voulez-vous vraiment supprimer cet article?");
 
-    cart.splice(itmToDelete, 1); //!
-    removeFromLocal(itm);
-    location.reload();
+    if (result) {
+      const itmToDelete = cart.findIndex((product) => product.id === itm.id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+      const element = document.querySelector(`[data-id="${id}"]`);
+
+      cart.splice(itmToDelete, 1); //!
+
+      removeFromLocal(itm);
+      element.remove();
+
+      init();
+      alert("le produit a été supprimer");
+    }
+
+    // location.reload();
   });
+
   function removeFromLocal(itm) {
     const key = `${itm.id}`;
     localStorage.removeItem(key);
@@ -256,3 +275,75 @@ function makeArticle(color, id, divImg) {
   article.appendChild(divImg);
   return article;
 } //? -----------------------------------------------------------------
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+const orderButton = document.querySelector("#order");
+
+orderButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  if (cart.length === 0) {
+    alert("svp choisissez un produit à acheter");
+    return;
+  }
+
+  if (valideForm() === true) {
+    return;
+  }
+
+  const form = document.querySelector(".cart__order__form");
+  const firstName = form.elements.firstName.value;
+  const lastName = form.elements.lastName.value;
+  const address = form.elements.address.value;
+  const city = form.elements.city.value;
+  const email = form.elements.email.value;
+
+  const body = {
+    contact: {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
+    },
+    products: getIdFromLocalStorage(),
+  };
+
+  fetch("http://localhost:3000/api/products/order", {
+    method: "post",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      const orderId = res.orderId;
+      location.href = "/html/confirmation.html" + "?orderId=" + orderId;
+    });
+});
+
+function valideForm() {
+  const form = document.querySelector(".cart__order__form");
+  const inputs = form.querySelectorAll("input");
+
+  inputs.forEach((input) => {
+    if (input.value === "") {
+      alert("svp remplissez tous les champs avant de passer votre commande");
+      return true;
+    }
+    // return false;
+  });
+}
+
+function getIdFromLocalStorage() {
+  const numberOfItems = localStorage.length;
+  const ids = [];
+
+  for (let i = 0; i < numberOfItems; i++) {
+    const key = localStorage.key(i);
+    // const id = key.split("-")[0];
+    ids.push(key);
+  }
+  return ids;
+}

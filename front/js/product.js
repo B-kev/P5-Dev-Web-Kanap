@@ -68,29 +68,25 @@ btn.addEventListener("click", (e) => {
   if (color == null || (color == "" && quantity == null) || quantity == 0) {
     alert("veillez choisir la couleur et la quantitée svp😉😉 !!!");
     return;
-  }
-
-  if (color == null || color == "") {
+  } else if (color == null || color == "") {
     alert("veillez choisir la couleur svp😏 !!!");
-    return;
-  }
-  if (quantity == null || quantity == 0) {
+  } else if (quantity == null || quantity == 0) {
     alert("veillez choisir la quantitée svp !! 👀");
-    return;
+  } else if (quantity < 1 || quantity > 100) {
+    alert("la quantité doit être compis entre 1 & 100 !! 👀");
+  } else {
+    // creation de l'objet
+    const object = {
+      quantity: Number(quantity),
+      id: id,
+      color: color,
+    };
+
+    // suavegarde données daans le local storage
+    localStorage.setItem(id, JSON.stringify(object));
+
+    alert("Votre article a été ajouté dans le panier 😎🤗");
+
+    // location.href = "/html/index.html";
   }
-
-  // creation de l'objet
-  const object = {
-    quantity: Number(quantity),
-    id: id,
-    color: color,
-    // imageUrl: imgUrl,bn
-    // price: itemPrice,
-    // name: itemName,
-  };
-
-  // suavegarde données daans le local storage
-  localStorage.setItem(id, JSON.stringify(object));
-
-  alert("Votre article a été ajouté dans le panier 😎🤗");
 });
