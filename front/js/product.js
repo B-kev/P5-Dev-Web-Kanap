@@ -53,6 +53,9 @@ function sofas(z) {
 
     const select = document.querySelector("#colors");
     select.appendChild(option);
+
+    const headTitle = document.querySelector("head title");
+    headTitle.innerText = name;
   });
 }
 

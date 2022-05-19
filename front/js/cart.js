@@ -1,60 +1,8 @@
-<<<<<<< HEAD
-// const section = document.getElementById("cart__items");
-const numberOfItems = localStorage.length;
-=======
 // const numberOfItems = localStorage.length;
->>>>>>> moi
 const cart = [];
 let totalPrice = 0;
 let totalQuantity = 0;
 
-<<<<<<< HEAD
-for (let i = 0; i < numberOfItems; i++) {
-  const item = localStorage.getItem(localStorage.key(i));
-  const itemObject = JSON.parse(item);
-  cart.push(itemObject);
-}
-
-for (let i = 0; i < cart.length; i++) {
-  const element = cart[i];
-
-  //
-
-  totalPrice += element.price;
-  totalQuantity += element.quantity;
-
-  /* *******************************************************
-   **** Enfant de : <div class="cart__item__content"> *****
-   ********************************************************** */
-  // image
-  const img = document.createElement("img");
-  img.src = element.imageUrl;
-  img.alt = element.altTxt;
-  //   <div class="cart__item__img"></div>
-  const divImg = document.createElement("div");
-  divImg.classList.add("cart__item__img");
-  divImg.appendChild(img);
-
-  //-----------------------------------------------------------------------------
-
-  /* *******************************************************
-   **** <div class="cart__item__content__description">
-        <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__delete"> *****
-   ********************************************************** */
-  const h2 = document.createElement("h2");
-  h2.innerText = element.name;
-
-  const pColor = document.createElement("p");
-  pColor.innerText = element.color;
-
-  const pPrice = document.createElement("p");
-  pPrice.innerText = element.price;
-
-  const pQuantity = document.createElement("p");
-  pQuantity.innerText = "Qté : " + element.quantity + " ";
-
-=======
 /** * ***** ******************* ******** **************
  * ! ****** ****  recuperation localStorage ************/
 //@ ******************************************************
@@ -163,23 +111,11 @@ function makeImg(imageUrl, altTxt) {
 }
 
 function makeInput(prix, price, quantity, pQuantity, pPrice, id, itm) {
->>>>>>> moi
   const input = document.createElement("input");
   input.type = "number";
   input.name = "itemQuantity";
   input.min = 1;
   input.max = 100;
-<<<<<<< HEAD
-  input.value = element.quantity;
-  input.classList.add("itemQuantity");
-
-  const pDelete = document.createElement("p");
-  pDelete.innerText = "Supprimer";
-  pDelete.classList.add("deleteItem");
-
-  /* **************************** Enfant de : <div class="cart__item__content"> ************** */
-  // <div class="cart__item__content__description">
-=======
   input.value = quantity;
   input.classList.add("itemQuantity");
   input.addEventListener("input", () =>
@@ -187,13 +123,15 @@ function makeInput(prix, price, quantity, pQuantity, pPrice, id, itm) {
   );
 
   function newPriceAndQt(newValue, id, prix) {
+    const itmToAdd = cart.find((product) => product.id === id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+
     if (Number(newValue) < 1 || Number(newValue) > 100) {
       alert("la quantité doit être compis entre 1 & 100 !! 👀");
+      input.value = itm.quantity;
       return;
     } else if (Number(newValue) == null || Number(newValue) == 0) {
       alert("veillez choisir la quantitée svp !! 👀");
     } else {
-      const itmToAdd = cart.find((product) => product.id === id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
       itmToAdd.quantity = Number(newValue);
       itm.quantity = itmToAdd.quantity;
 
@@ -292,28 +230,11 @@ function makePDelete() {
  */
 
 function makeDivDescription(h2, pColor, pPrice) {
->>>>>>> moi
   const divDescription = document.createElement("div");
   divDescription.classList.add("cart__item__content__description");
   divDescription.appendChild(h2);
   divDescription.appendChild(pColor);
   divDescription.appendChild(pPrice);
-<<<<<<< HEAD
-
-  // <div class="cart__item__content__settings">
-  const divSettings = document.createElement("div");
-  divSettings.classList.add("cart__item__content__settings");
-  divSettings.appendChild(pQuantity);
-  divSettings.appendChild(input);
-
-  // <div class="cart__item__content__settings__delete">
-  const divDelete = document.createElement("div");
-  divDelete.classList.add("cart__item__content__settings__delete");
-  divDelete.appendChild(pDelete);
-
-  // ++++++++++++++++++++++++++++++
-  // <div class="cart__item__content">
-=======
   return divDescription;
 } //@ -----------------------------------------------------------
 
@@ -366,41 +287,11 @@ function makemakeDivDelete(pDelete, itm, id) {
 } //todo -----------------------------------------------------------
 
 function makeDivContent(divDescription, divSettings, divDelete) {
->>>>>>> moi
   const divContent = document.createElement("div");
   divContent.classList.add("cart__item__content");
   divContent.appendChild(divDescription);
   divContent.appendChild(divSettings);
   divContent.appendChild(divDelete);
-<<<<<<< HEAD
-
-  // --------------------------------------------------------------------------------
-
-  //-----------++++++++++++++++++++++++++++++++++++++++++
-
-  /****************************************************** article */
-
-  //   <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
-  const article = document.createElement("article");
-  article.classList.add("cart__item");
-  article.dataset.id = element.id;
-  article.dataset.color = element.color;
-  // apend
-  document.getElementById("cart__items").appendChild(article);
-  article.appendChild(divImg);
-  article.appendChild(divContent);
-
-  //---------------------------------------------------------------------------------
-  document.getElementById("totalPrice").innerText = totalPrice;
-  document.getElementById("totalQuantity").innerText = totalQuantity;
-}
-
-//
-//
-// for (let i = 0; i < cart.length; i++) {
-//   const item = cart[i];
-// }
-=======
   return divContent;
 } //! ---------------------------------------------------------------
 
@@ -472,6 +363,7 @@ function valideForm() {
       return true;
     }
   });
+  // return true;
 }
 
 function getIdFromLocalStorage() {
@@ -485,4 +377,3 @@ function getIdFromLocalStorage() {
   }
   return ids;
 }
->>>>>>> moi
