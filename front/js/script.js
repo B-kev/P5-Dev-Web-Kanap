@@ -1,63 +1,39 @@
-//   altTxt: "Photo d'un canapé bleu, deux places";
-//   colors: (3)[("Blue", "White", "Black")];
-//   description: "Excepteur sint occaecat cupicanapésat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-//   imageUrl: "http://localhost:3000/images/kanap01.jpeg";
-//   name: "Kanap Sinopé";
-//   price: 1849;
-//   _id: "107fb5b75607497b96722bda5b504926";
-
-fetch("http://localhost:3000/api/products")
+fetch(`http://localhost:3000/api/products`)
   .then((res) => res.json())
-  .then((data) => addProducts(data));
+  .then((data) => sofas(data));
 
-function addProducts(canapé) {
-  // boucle
+function sofas(z) {
+  // la boucle commence
 
-  for (let i = 0; i < canapé.length; i++) {
-    //   Element du backend
+  z.forEach((kanap) => {
+    const { altTxt, description, imageUrl, name, _id } = kanap;
 
-    // const altTxt = canapés[i].name;
-    // const description = canapés[i].description;
-    // const imageUrl = canapés[i].imageUrl;
-    // const id = "./product.html?id=" + canapés[i]._id;
-    const { altTxt, description, imageUrl, name, _id } = canapé[i];
-
-    /**
-     * creation Element & balise
-     *  */
-
-    // creation image <img>
-
+    // image
     const img = document.createElement("img");
     img.src = imageUrl;
     img.alt = altTxt;
 
-    //   creation h3 <h3>
-
+    //   h3
     const h3 = document.createElement("h3");
-    h3.classList.add("productName");
     h3.innerText = name;
 
-    //   creation p <p>
-
+    //   p
     const p = document.createElement("p");
     p.innerText = description;
 
-    //   creation article <article></article>
-
+    //   article
     const article = document.createElement("article");
     article.appendChild(img);
     article.appendChild(h3);
     article.appendChild(p);
 
-    //   creation link <a></a>
-    const aLink = document.createElement("a");
-    aLink.href = "./product.html?id=" + _id;
-    aLink.appendChild(article);
+    //   a
+    const a = document.createElement("a");
+    a.href = `./product.html?id=${_id}`;
+    a.appendChild(article);
 
-    // ajout des element dans la partie html
-
-    const items = document.querySelector("#items");
-    items.appendChild(aLink);
-  }
+    //   container
+    const itemContainer = document.getElementById("items");
+    itemContainer.appendChild(a);
+  });
 }
