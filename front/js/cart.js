@@ -22,60 +22,72 @@ init();
  * !  +++++++++++*********  Items boucle  ********+++++++++++*/
 //@ ***********************************************************
 
-for (let i = 0; i < cart.length; i++) {
-  const itm = cart[i];
-  let { quantity, id, color } = itm;
+function panier() {
+  for (let i = 0; i < cart.length; i++) {
+    const itm = cart[i];
+    let { quantity, id, color } = itm;
 
-  fetch(`http://localhost:3000/api/products/${id}`)
-    .then((res) => res.json())
-    .then((res) => sofas(res));
-  function sofas(z) {
-    let { altTxt, colors, description, imageUrl, name, price } = z;
-    realise(imageUrl, name, price);
-  }
+    fetch(`http://localhost:3000/api/products/${id}`)
+      .then((res) => res.json())
+      .then((res) => sofas(res));
+    function sofas(z) {
+      let { altTxt, colors, description, imageUrl, name, price } = z;
+      realise(imageUrl, name, price);
+    }
 
-  function realise(imageUrl, name, price, altTxt) {
-    const divImg = makeImg(imageUrl, altTxt);
+    function realise(imageUrl, name, price, altTxt) {
+      const divImg = makeImg(imageUrl, altTxt);
 
-    prix = price * quantity;
+      prix = price * quantity;
 
-    totalPrice += prix;
-    totalQuantity += quantity;
+      totalPrice += prix;
+      totalQuantity += quantity;
 
-    const h2 = makeH2(name);
-    const pColor = makePcolor(color);
-    const pQuantity = makePquantity(quantity);
-    const pPrice = makePrice(prix);
-    const pDelete = makePDelete();
+      const h2 = makeH2(name);
+      const pColor = makePcolor(color);
+      const pQuantity = makePquantity(quantity);
+      const pPrice = makePrice(prix);
+      const pDelete = makePDelete();
 
-    const input = makeInput(prix, price, quantity, pQuantity, pPrice, itm);
+      const input = makeInput(
+        prix,
+        price,
+        quantity,
+        pQuantity,
+        pPrice,
+        id,
+        itm
+      );
 
-    /**
-     * * ******************** **********
-     * @ makeDivDescription
-     * * makeDivSettings
-     * todo: makemakeDivDelete
-     * ? makeArticle
-     * * **************** ***** *********
-     */
+      /**
+       * * ******************** **********
+       * @ makeDivDescription
+       * * makeDivSettings
+       * todo: makemakeDivDelete
+       * ? makeArticle
+       * * **************** ***** *********
+       */
 
-    const divDescription = makeDivDescription(h2, pColor, pPrice); //@ --------------
+      const divDescription = makeDivDescription(h2, pColor, pPrice); //@ --------------
 
-    const divSettingsQt = makeDivSettingsQt(pQuantity, input); //* -----------------------
+      const divSettingsQt = makeDivSettingsQt(pQuantity, input); //* -----------------------
 
-    const divSettings = makeDivSettings(divSettingsQt); //* -----------------------
+      const divSettings = makeDivSettings(divSettingsQt); //* -----------------------
 
-    const divDelete = makemakeDivDelete(pDelete, itm, id); //todo ----------------------
+      const divDelete = makemakeDivDelete(pDelete, itm, id); //todo ----------------------
 
-    const divContent = makeDivContent(divDescription, divSettings, divDelete); //? ---------------
+      const divContent = makeDivContent(divDescription, divSettings, divDelete); //? ---------------
 
-    const article = makeArticle(color, id, divImg); // ------------------------
-    article.appendChild(divContent); // ---------------------------------------
+      const article = makeArticle(color, id, divImg); // ------------------------
+      article.appendChild(divContent); // ---------------------------------------
 
-    document.getElementById("totalPrice").innerText = totalPrice;
-    document.getElementById("totalQuantity").innerText = totalQuantity;
+      document.getElementById("totalPrice").innerText = totalPrice;
+      document.getElementById("totalQuantity").innerText = totalQuantity;
+    }
   }
 }
+
+panier();
 
 // ! ---------------------***************    les pusher Functions vers la voucle    ***************----------------
 
@@ -98,7 +110,7 @@ function makeImg(imageUrl, altTxt) {
   return divImg;
 }
 
-function makeInput(prix, price, quantity, pQuantity, pPrice, itm) {
+function makeInput(prix, price, quantity, pQuantity, pPrice, id, itm) {
   const input = document.createElement("input");
   input.type = "number";
   input.name = "itemQuantity";
@@ -106,33 +118,48 @@ function makeInput(prix, price, quantity, pQuantity, pPrice, itm) {
   input.max = 100;
   input.value = quantity;
   input.classList.add("itemQuantity");
-  input.addEventListener("click", (e) => qtInput(e, itm, input.value));
+  input.addEventListener("input", () =>
+    newPriceAndQt(input.value, id, itm, prix, price)
+  );
 
-  function qtInput(e, itm) {
-    const itmToAdd = cart.find((product) => product.id === itm.id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
-    itmToAdd.quantity = Number(input.value);
-    quantity = itmToAdd.quantity;
+  function newPriceAndQt(newValue, id, prix) {
+    if (Number(newValue) < 1 || Number(newValue) > 100) {
+      alert("la quantité doit être compis entre 1 & 100 !! 👀");
+      return;
+    } else if (Number(newValue) == null || Number(newValue) == 0) {
+      alert("veillez choisir la quantitée svp !! 👀");
+    } else {
+      const itmToAdd = cart.find((product) => product.id === id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+      itmToAdd.quantity = Number(newValue);
+      itm.quantity = itmToAdd.quantity;
 
-    newPrice = price * itmToAdd.quantity;
+      prix = itmToAdd.quantity * price;
+      pPrice.innerText = prix + " €";
 
-    pPrice.innerText = newPrice + " €";
+      let totalQuantity = 0;
+      let totalPrice = 0;
 
-    let totalQt = 0;
-    let totalPrix = 0;
+      for (let i = 0; i < cart.length; i++) {
+        const itm = cart[i];
+        let { quantity, id, color } = itm;
 
-    for (let i = 0; i < cart.length; i++) {
-      const itm = cart[i];
-      let { quantity } = itm;
+        fetch(`http://localhost:3000/api/products/${id}`)
+          .then((res) => res.json())
+          .then((res) => sofas(res));
+        function sofas(z) {
+          let { altTxt, colors, description, imageUrl, name, price } = z;
+          clickRealise(price);
+        }
 
-      realis();
-      function realis() {
-        newPrix = price * quantity;
+        function clickRealise(price) {
+          newPrice = price * quantity;
 
-        totalPrix += newPrix;
-        totalQt += quantity;
+          totalQuantity += quantity;
+          totalPrice += newPrice;
 
-        document.getElementById("totalPrice").innerText = totalPrix;
-        document.getElementById("totalQuantity").innerText = totalQt;
+          document.getElementById("totalPrice").innerText = totalPrice;
+          document.getElementById("totalQuantity").innerText = totalQuantity;
+        }
       }
     }
 
@@ -143,7 +170,8 @@ function makeInput(prix, price, quantity, pQuantity, pPrice, itm) {
 }
 function addFromLocal(itm) {
   const dataTosave = JSON.stringify(itm);
-  localStorage.setItem(itm.id, dataTosave);
+  const key = `${itm.id}-${itm.color}`;
+  localStorage.setItem(key, dataTosave);
 }
 
 function makeH2(name) {
@@ -229,11 +257,12 @@ function makemakeDivDelete(pDelete, itm, id) {
   divDelete.classList.add("cart__item__content__settings__delete");
 
   divDelete.addEventListener("click", () => {
-    // console.log("dhiqijcmdjopo");
     let result = confirm("voulez-vous vraiment supprimer cet article?");
 
     if (result) {
-      const itmToDelete = cart.findIndex((product) => product.id === itm.id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+      const itmToDelete = cart.findIndex(
+        (product) => product.id === itm.id && product.color === itm.color
+      ); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
       const element = document.querySelector(`[data-id="${id}"]`);
 
       cart.splice(itmToDelete, 1); //!
@@ -241,15 +270,14 @@ function makemakeDivDelete(pDelete, itm, id) {
       removeFromLocal(itm);
       element.remove();
 
-      init();
       alert("le produit a été supprimer");
     }
 
-    // location.reload();
+    location.reload();
   });
 
   function removeFromLocal(itm) {
-    const key = `${itm.id}`;
+    const key = `${itm.id}-${itm.color}`;
     localStorage.removeItem(key);
   }
 
@@ -313,7 +341,7 @@ orderButton.addEventListener("click", (e) => {
     method: "post",
     body: JSON.stringify(body),
     headers: {
-      "Content-Type": "application/json",
+      "content-Type": "application/json",
     },
   })
     .then((res) => res.json())
@@ -332,7 +360,6 @@ function valideForm() {
       alert("svp remplissez tous les champs avant de passer votre commande");
       return true;
     }
-    // return false;
   });
 }
 
@@ -342,8 +369,8 @@ function getIdFromLocalStorage() {
 
   for (let i = 0; i < numberOfItems; i++) {
     const key = localStorage.key(i);
-    // const id = key.split("-")[0];
-    ids.push(key);
+    const id = key.split("-")[0];
+    ids.push(id);
   }
   return ids;
 }

@@ -76,6 +76,7 @@ btn.addEventListener("click", (e) => {
     alert("la quantité doit être compis entre 1 & 100 !! 👀");
   } else {
     // creation de l'objet
+    const key = `${id}-${color}`;
     const object = {
       quantity: Number(quantity),
       id: id,
@@ -83,7 +84,7 @@ btn.addEventListener("click", (e) => {
     };
 
     // suavegarde données daans le local storage
-    localStorage.setItem(id, JSON.stringify(object));
+    localStorage.setItem(key, JSON.stringify(object));
 
     alert("Votre article a été ajouté dans le panier 😎🤗");
 
