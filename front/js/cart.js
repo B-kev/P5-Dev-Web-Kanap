@@ -4,7 +4,7 @@ let totalPrice = 0;
 let totalQuantity = 0;
 
 /** * ***** ******************* ******** **************
- * ! ****** ****  recuperation localStorage ************/
+ * ! \\\\\\\\\\\\\ recuperation localStorage  \\\\\\\\\ */
 //@ ******************************************************
 
 function init() {
@@ -19,7 +19,7 @@ function init() {
 init();
 
 /** * ************* ******** ******* *************** **********
- * !  +++++++++++*********  Items boucle  ********+++++++++++*/
+ * !  \\\\\\\\\\\\\\\\\\\\\\  Items boucle  \\\\\\\\\\\\\\\\ */
 //@ ***********************************************************
 
 function panier() {
@@ -68,18 +68,18 @@ function panier() {
        * * **************** ***** *********
        */
 
-      const divDescription = makeDivDescription(h2, pColor, pPrice); //@ --------------
+      const divDescription = makeDivDescription(h2, pColor, pPrice);
 
-      const divSettingsQt = makeDivSettingsQt(pQuantity, input); //* -----------------------
+      const divSettingsQt = makeDivSettingsQt(pQuantity, input);
 
-      const divSettings = makeDivSettings(divSettingsQt); //* -----------------------
+      const divSettings = makeDivSettings(divSettingsQt);
 
-      const divDelete = makemakeDivDelete(pDelete, itm, id); //todo ----------------------
+      const divDelete = makemakeDivDelete(pDelete, itm, id);
 
-      const divContent = makeDivContent(divDescription, divSettings, divDelete); //? ---------------
+      const divContent = makeDivContent(divDescription, divSettings, divDelete); //?
 
-      const article = makeArticle(color, id, divImg); // ------------------------
-      article.appendChild(divContent); // ---------------------------------------
+      const article = makeArticle(color, id, divImg);
+      article.appendChild(divContent);
 
       document.getElementById("totalPrice").innerText = totalPrice;
       document.getElementById("totalQuantity").innerText = totalQuantity;
@@ -89,7 +89,7 @@ function panier() {
 
 panier();
 
-// ! ---------------------***************    les pusher Functions vers la voucle    ***************----------------
+//* ///////////////////////    les pusher Functions vers la voucle    ///////////////////////////////
 
 /**
  * @ Create makeImg
@@ -123,7 +123,7 @@ function makeInput(prix, price, quantity, pQuantity, pPrice, id, itm) {
   );
 
   function newPriceAndQt(newValue, id, prix) {
-    const itmToAdd = cart.find((product) => product.id === id); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+    const itmToAdd = cart.find((product) => product.id === id); //* dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
 
     if (Number(newValue) < 1 || Number(newValue) > 100) {
       alert("la quantité doit être compis entre 1 & 100 !! 👀");
@@ -195,20 +195,20 @@ function makePcolor(color) {
   const pColor = document.createElement("p");
   pColor.innerText = color;
   return pColor;
-} //@ ----------------------------------------------
+} //@
 
 function makePquantity() {
   const pQuantity = document.createElement("p");
   pQuantity.innerText = "Qté :";
   return pQuantity;
-} //* ----------------------------------------------
+} //*
 
 function makePrice(prix) {
   const pPrice = document.createElement("p");
   pPrice.innerText = prix + " €";
 
   return pPrice;
-} //todo -----------------------------------------------
+} //todo-
 
 function makePDelete() {
   let pDelete = document.createElement("p");
@@ -217,7 +217,7 @@ function makePDelete() {
 
   return pDelete;
 }
-//? ------------------------------------------------------
+//?
 
 /**
  * *******************************************************
@@ -236,7 +236,7 @@ function makeDivDescription(h2, pColor, pPrice) {
   divDescription.appendChild(pColor);
   divDescription.appendChild(pPrice);
   return divDescription;
-} //@ -----------------------------------------------------------
+} //@-----
 
 function makeDivSettings(makeDivSettingsQt) {
   const divSettings = document.createElement("div");
@@ -251,7 +251,7 @@ function makeDivSettingsQt(pQuantity, input) {
   makeDivSettingsQt.appendChild(input);
   return makeDivSettingsQt;
 }
-//* ------------------------------------------------------------
+//*
 
 function makemakeDivDelete(pDelete, itm, id) {
   const divDelete = document.createElement("div");
@@ -264,10 +264,11 @@ function makemakeDivDelete(pDelete, itm, id) {
     if (result) {
       const itmToDelete = cart.findIndex(
         (product) => product.id === itm.id && product.color === itm.color
-      ); //! dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+      ); //? dans cart trouve le product =>(tel que) product.id ===(soit égale) à itm.id
+
       const element = document.querySelector(`[data-id="${id}"]`);
 
-      cart.splice(itmToDelete, 1); //!
+      cart.splice(itmToDelete, 1);
 
       removeFromLocal(itm);
       element.remove();
@@ -284,7 +285,7 @@ function makemakeDivDelete(pDelete, itm, id) {
   }
 
   return divDelete;
-} //todo -----------------------------------------------------------
+} //todo-----
 
 function makeDivContent(divDescription, divSettings, divDelete) {
   const divContent = document.createElement("div");
@@ -293,7 +294,7 @@ function makeDivContent(divDescription, divSettings, divDelete) {
   divContent.appendChild(divSettings);
   divContent.appendChild(divDelete);
   return divContent;
-} //! ---------------------------------------------------------------
+} //!-
 
 function makeArticle(color, id, divImg) {
   const article = document.createElement("article");
@@ -304,9 +305,11 @@ function makeArticle(color, id, divImg) {
   document.getElementById("cart__items").appendChild(article);
   article.appendChild(divImg);
   return article;
-} //? -----------------------------------------------------------------
+} //?---
 
-/////////////////////////////////////////////////////////////////////////////////////////
+//* ///////////////////////    validation user input and send data to server    ///////////////////////////////
+
+// \\\\\\\\\\\   parent function  \\\\\\\\\\\\
 
 const orderButton = document.querySelector("#order");
 
@@ -317,54 +320,41 @@ orderButton.addEventListener("click", (e) => {
     return;
   }
 
-  if (valideForm() === true) {
-    return;
+  if (formValidation() == true) {
+    const form = document.querySelector(".cart__order__form");
+    const firstName = form.elements.firstName.value;
+    const lastName = form.elements.lastName.value;
+    const address = form.elements.address.value;
+    const city = form.elements.city.value;
+    const email = form.elements.email.value;
+    const body = {
+      contact: {
+        firstName: firstName,
+        lastName: lastName,
+        address: address,
+        city: city,
+        email: email,
+      },
+      products: getIdFromLocalStorage(),
+    };
+
+    fetch("http://localhost:3000/api/products/order", {
+      method: "post",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        const orderId = res.orderId;
+        location.href = "/html/confirmation.html" + "?orderId=" + orderId;
+      });
   }
-
-  const form = document.querySelector(".cart__order__form");
-  const firstName = form.elements.firstName.value;
-  const lastName = form.elements.lastName.value;
-  const address = form.elements.address.value;
-  const city = form.elements.city.value;
-  const email = form.elements.email.value;
-
-  const body = {
-    contact: {
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      city: city,
-      email: email,
-    },
-    products: getIdFromLocalStorage(),
-  };
-
-  fetch("http://localhost:3000/api/products/order", {
-    method: "post",
-    body: JSON.stringify(body),
-    headers: {
-      "content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      const orderId = res.orderId;
-      location.href = "/html/confirmation.html" + "?orderId=" + orderId;
-    });
 });
 
-function valideForm() {
-  const form = document.querySelector(".cart__order__form");
-  const inputs = form.querySelectorAll("input");
-
-  inputs.forEach((input) => {
-    if (input.value === "") {
-      alert("svp remplissez tous les champs avant de passer votre commande");
-      return true;
-    }
-  });
-  // return true;
-}
+//todo \\\\\\\\\\\   child functions  \\\\\\\\\\\\
 
 function getIdFromLocalStorage() {
   const numberOfItems = localStorage.length;
@@ -376,4 +366,76 @@ function getIdFromLocalStorage() {
     ids.push(id);
   }
   return ids;
+}
+
+function formValidation() {
+  const firstNameCheck = () => {
+    const firstName = document.querySelector("#firstName");
+    const errorMsg = document.querySelector("#firstNameErrorMsg");
+    if (
+      /^([A-Za-zÀ-ú]{2,20})?([-])?([A-Za-zÀ-ú]{2,20})$/.test(firstName.value)
+    ) {
+      errorMsg.innerText = "";
+      return true;
+    } else {
+      errorMsg.innerText = "Veuillez renseigner un prénom.";
+    }
+  };
+  const lastNameCheck = () => {
+    const lastName = document.querySelector("#lastName");
+    const errorMsg = document.querySelector("#lastNameErrorMsg");
+    if (
+      /^([A-Za-zÀ-ú]{2,20})?([-])?([A-Za-zÀ-ú]{2,20})$/.test(lastName.value)
+    ) {
+      errorMsg.innerText = "";
+      return true;
+    } else {
+      errorMsg.innerText = "Veuillez renseigner un nom.";
+    }
+  };
+  const addressCheck = () => {
+    const address = document.querySelector("#address");
+    const errorMsg = document.querySelector("#addressErrorMsg");
+    if (address.value != "") {
+      errorMsg.innerText = "";
+      return true;
+    } else {
+      errorMsg.innerText = "Veuillez renseigner une adresse.";
+    }
+  };
+  const cityCheck = () => {
+    const city = document.querySelector("#city");
+    const errorMsg = document.querySelector("#cityErrorMsg");
+    if (
+      /^([A-Za-zÀ-ú']{2,20})?([-])?([A-Za-zÀ-ú']{2,20})?([-])?([A-Za-zÀ-ú']{2,20})$/.test(
+        city.value
+      )
+    ) {
+      errorMsg.innerText = "";
+      return true;
+    } else {
+      errorMsg.innerText = "Veuillez renseigner une ville.";
+    }
+  };
+  const emailCheck = () => {
+    const email = document.querySelector("#email");
+    const errorMsg = document.querySelector("#emailErrorMsg");
+    if (/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/.test(email.value)) {
+      errorMsg.innerText = "";
+      return true;
+    } else {
+      errorMsg.innerText = "Veuillez renseigner un email.";
+    }
+  };
+  if (
+    firstNameCheck() &&
+    lastNameCheck() &&
+    addressCheck() &&
+    cityCheck() &&
+    emailCheck()
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }
